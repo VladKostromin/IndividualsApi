@@ -1,0 +1,18 @@
+server:
+  port: 8090
+
+
+keycloak:
+  server-url: http://localhost:8080
+  realm: authorization-api
+  client-id: orchestrator-client
+  client-secret: OXqAUsmQZfyWy1ZA0Y1FatVpR6CS8B5A
+  issuer-uri: ${keycloak.server-url}/realms/${keycloak.realm}
+
+
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${keycloak.issuer-uri}
