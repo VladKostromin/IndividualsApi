@@ -2,6 +2,7 @@ package com.vladkostromin.individualsapi.model;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import com.vladkostrov.dto.rest.userserviceapi.RegisterIndividualRequest;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,5 +17,5 @@ public class UserRegistrationRequest {
     private String email;
     private String password;
     private String confirmPassword;
-
+    private RegisterIndividualRequest registerInfo;
 }

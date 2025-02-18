@@ -1,4 +1,4 @@
-package com.vladkostromin.individualsapi.exception.errorHandler;
+package com.vladkostromin.individualsapi.exception.errorhandler;
 
 import org.springframework.boot.autoconfigure.web.WebProperties;
 import org.springframework.boot.autoconfigure.web.reactive.error.AbstractErrorWebExceptionHandler;

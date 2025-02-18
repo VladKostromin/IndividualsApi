@@ -6,7 +6,7 @@ import com.vladkostromin.individualsapi.exception.PasswordMismatchException;
 import com.vladkostromin.individualsapi.model.TokenResponse;
 import com.vladkostromin.individualsapi.model.UserRegistrationRequest;
 import com.vladkostromin.individualsapi.model.UserResponse;
-import com.vladkostromin.individualsapi.utils.UserServiceUtils;
+import com.vladkostromin.individualsapi.utils.ApiDataUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,12 +25,12 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-public class UserServiceTest {
+public class KeyCloakServiceTest {
     @Mock
     private KeyCloakAuthProvider keyCloakAuthProvider;
 
     @InjectMocks
-    private UserService userServiceUnderTest;
+    private KeyCloakService keyCloakServiceUnderTest;
 
 
     @Test
@@ -38,10 +38,10 @@ public class UserServiceTest {
     public void givenRegistrationRequest_whenRegisterUser_thenSuccessTokenResponse() {
         //given
         given(keyCloakAuthProvider.registerUser(anyString(), anyString(), anyString()))
-                .willReturn(Mono.just(UserServiceUtils.getTokenResponse()));
-        TokenResponse expectedTokenResponse = UserServiceUtils.getTokenResponse();
+                .willReturn(Mono.just(ApiDataUtils.getTokenResponse()));
+        TokenResponse expectedTokenResponse = ApiDataUtils.getTokenResponse();
         //when
-        Mono<TokenResponse> resultTokenResponse = userServiceUnderTest.registerUser(UserServiceUtils.getUserRegistrationRequest());
+        Mono<TokenResponse> resultTokenResponse = keyCloakServiceUnderTest.registerUser(ApiDataUtils.getUserRegistrationRequest());
         //then
         StepVerifier.create(resultTokenResponse)
                 .assertNext(tokenResponse -> {
@@ -57,13 +57,13 @@ public class UserServiceTest {
     @DisplayName("Test authenticate user success functionality")
     public void givenAuthRequest_whenAuthenticateUser_thenSuccessTokenResponse() {
         // given
-        TokenResponse expectedResponse = UserServiceUtils.getTokenResponse();
+        TokenResponse expectedResponse = ApiDataUtils.getTokenResponse();
 
         given(keyCloakAuthProvider.authenticate(any(String.class), any(String.class)))
                 .willReturn(Mono.just(expectedResponse));
 
         // when
-        Mono<TokenResponse> result = userServiceUnderTest.authenticateUser(UserServiceUtils.getAuthRequest());
+        Mono<TokenResponse> result = keyCloakServiceUnderTest.authenticateUser(ApiDataUtils.getAuthRequest());
 
         // then
         StepVerifier.create(result)
@@ -79,13 +79,13 @@ public class UserServiceTest {
     @DisplayName("Test refresh token success functionality")
     public void givenRefreshTokenRequest_whenRefreshUserToken_thenSuccessTokenResponse() {
         // given
-        TokenResponse expectedResponse = UserServiceUtils.getTokenResponse();
+        TokenResponse expectedResponse = ApiDataUtils.getTokenResponse();
 
         given(keyCloakAuthProvider.refreshToken(any(String.class)))
                 .willReturn(Mono.just(expectedResponse));
 
         // when
-        Mono<TokenResponse> result = userServiceUnderTest.refreshUserToken(UserServiceUtils.getRefreshTokenRequest());
+        Mono<TokenResponse> result = keyCloakServiceUnderTest.refreshUserToken(ApiDataUtils.getRefreshTokenRequest());
 
         // then
         StepVerifier.create(result)
@@ -101,13 +101,13 @@ public class UserServiceTest {
     @DisplayName("Test get user by token success functionality")
     public void givenValidToken_whenGetUserByUserId_thenSuccessUserResponse() {
         // given
-        UserResponse expectedResponse = UserServiceUtils.getUser();
+        UserResponse expectedResponse = ApiDataUtils.getUser();
 
         given(keyCloakAuthProvider.getUserByUserToken(any(String.class)))
                 .willReturn(Mono.just(expectedResponse));
 
         // when
-        Mono<UserResponse> result = userServiceUnderTest.getUserFromToken("valid-token");
+        Mono<UserResponse> result = keyCloakServiceUnderTest.getUserFromToken("valid-token");
 
         // then
         StepVerifier.create(result)
@@ -124,13 +124,13 @@ public class UserServiceTest {
     @DisplayName("Test registration user functionality")
     public void givenRegistrationRequest_whenRegisterUser_thenPasswordMismatchExceptionIsThrown() {
         //given
-        UserRegistrationRequest userRegistrationRequest = UserServiceUtils.getUserRegistrationRequest();
+        UserRegistrationRequest userRegistrationRequest = ApiDataUtils.getUserRegistrationRequest();
         userRegistrationRequest.setConfirmPassword("confirmPasswordMismatch");
 
         given(keyCloakAuthProvider.registerUser(anyString(), anyString(), anyString()))
                 .willReturn(Mono.error(new PasswordMismatchException(HttpStatusCode.valueOf(400), "Password do not match")));
         //when
-        Mono<TokenResponse> resultTokenResponse = userServiceUnderTest.registerUser(UserServiceUtils.getUserRegistrationRequest());
+        Mono<TokenResponse> resultTokenResponse = keyCloakServiceUnderTest.registerUser(ApiDataUtils.getUserRegistrationRequest());
         //then
         StepVerifier.create(resultTokenResponse)
                 .expectErrorMatches(throwable -> throwable instanceof PasswordMismatchException &&

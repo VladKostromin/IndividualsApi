@@ -1,4 +1,4 @@
-package com.vladkostromin.individualsapi.exception.errorHandler;
+package com.vladkostromin.individualsapi.exception.errorhandler;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -63,6 +63,8 @@ public class AppErrorAttributes extends DefaultErrorAttributes {
                 return jsonNode.get("errorMessage").asText();
             } else if(jsonNode.has("error_description")) {
                 return jsonNode.get("error_description").asText();
+            } else if(jsonNode.has("error")) {
+                return jsonNode.get("error").asText();
             } else {
                 return errorMessage;
             }

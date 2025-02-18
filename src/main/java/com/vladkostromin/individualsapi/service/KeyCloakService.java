@@ -8,7 +8,7 @@ import reactor.core.publisher.Mono;
 
 @Service
 @RequiredArgsConstructor
-public class UserService {
+public class KeyCloakService {
     private final KeyCloakAuthProvider keyCloakAuthProvider;
 
     public Mono<TokenResponse> registerUser(UserRegistrationRequest registrationRequest) {

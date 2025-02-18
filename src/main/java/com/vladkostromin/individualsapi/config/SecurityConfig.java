@@ -1,8 +1,12 @@
 package com.vladkostromin.individualsapi.config;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
@@ -13,7 +17,9 @@ import org.springframework.web.reactive.function.client.WebClient;
 @EnableWebFluxSecurity
 public class SecurityConfig {
     @Value("${keycloak.server-url}")
-    private String baseUrl;
+    private String keycloakServerUrl;
+    @Value("${user-service.url}")
+    private String userServiceUrl;
 
     private static final String[] publicRoutes = {"/api/v1/auth/registration", "/api/v1/auth/login", "/api/v1/auth/refresh-token", "/api/v1/auth/me"};
 
@@ -24,15 +30,25 @@ public class SecurityConfig {
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .authorizeExchange(authorizeExchangeSpec -> authorizeExchangeSpec
                         .pathMatchers(publicRoutes).permitAll()
-                        .anyExchange().authenticated());
+                        .anyExchange().denyAll());
         return http
                 .build();
     }
 
     @Bean
+    @Qualifier("keycloakWebClient")
     public WebClient keycloakWebClient() {
         return WebClient.builder()
-                .baseUrl(baseUrl)
+                .baseUrl(keycloakServerUrl)
+                .build();
+    }
+
+    @Bean
+    @Qualifier("microServiceWebClient")
+    public WebClient userServiceWebClient() {
+        return WebClient.builder()
+                .baseUrl(userServiceUrl)
+                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .build();
     }
 }

@@ -5,9 +5,11 @@ server:
 keycloak:
   server-url: http://localhost:8080
   realm: authorization-api
-  client-id: orchestrator-client
-  client-secret: OXqAUsmQZfyWy1ZA0Y1FatVpR6CS8B5A
+  client-id: orchestrator-api
+  client-secret: OY8dBw6hyng4oJL7LV10PAPivX113Yqx
   issuer-uri: ${keycloak.server-url}/realms/${keycloak.realm}
+user-service:
+  url: http://localhost:8091/api/v1/individual
 
 
 spring:

@@ -21,6 +21,7 @@ configurations {
 }
 
 repositories {
+    mavenLocal()
     mavenCentral()
 }
 
@@ -38,11 +39,20 @@ dependencies {
     testImplementation "org.mockito:mockito-core:$mockitoCoreVersion"
     testImplementation 'org.testcontainers:junit-jupiter'
 
+    testImplementation 'io.rest-assured:rest-assured'
+    testImplementation 'org.testcontainers:mockserver'
+    testImplementation "org.mock-server:mockserver-netty:$mockServer"
+
+    testImplementation "org.mock-server:mockserver-client-java:$mockServer"
+    testImplementation "org.mock-server:mockserver-junit-jupiter:$mockServer"
+
     testImplementation 'org.springframework.boot:spring-boot-testcontainers'
     implementation "com.github.dasniko:testcontainers-keycloak:$keycloakTestcontainersVersion"
     implementation 'com.auth0:java-jwt:4.2.0'
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
+
+    implementation "com.vladkostrov:common-dto:$commonDto"
 
 
     testImplementation 'org.springframework.security:spring-security-test'

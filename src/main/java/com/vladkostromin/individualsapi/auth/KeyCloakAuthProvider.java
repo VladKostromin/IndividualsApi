@@ -7,16 +7,15 @@ import com.vladkostromin.individualsapi.exception.ApiException;
 import com.vladkostromin.individualsapi.exception.PasswordMismatchException;
 import com.vladkostromin.individualsapi.model.TokenResponse;
 import com.vladkostromin.individualsapi.model.UserResponse;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.keycloak.OAuth2Constants;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
-import org.springframework.security.web.reactive.result.method.annotation.AuthenticationPrincipalArgumentResolver;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
@@ -30,12 +29,10 @@ import java.util.List;
 import java.util.Map;
 
 @Component
-@RequiredArgsConstructor
 @Slf4j
 public class KeyCloakAuthProvider implements AuthProvider<TokenResponse, UserResponse>{
 
     private final WebClient webClient;
-    private final AuthenticationPrincipalArgumentResolver authenticationPrincipalArgumentResolver;
 
     @Value("${keycloak.client-id}")
     private String clientId;
@@ -43,6 +40,9 @@ public class KeyCloakAuthProvider implements AuthProvider<TokenResponse, UserRes
     private String clientSecret;
     @Value("${keycloak.realm}")
     private String realm;
+    public KeyCloakAuthProvider(@Qualifier("keycloakWebClient")WebClient webClient) {
+        this.webClient = webClient;
+    }
 
 
     @Override
